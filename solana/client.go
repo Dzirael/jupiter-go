@@ -64,8 +64,8 @@ func NewClient(
 }
 
 // SendTransactionOnChain sends a transaction on-chain.
-func (e client) SendTransactionOnChain(ctx context.Context, txBase64 string) (TxID, error) {
-	latestBlockhash, err := e.clientRPC.GetLatestBlockhash(ctx, "")
+func (e client) SendTransactionOnChain(ctx context.Context, txBase64 string, commitment rpc.CommitmentType) (TxID, error) {
+	latestBlockhash, err := e.clientRPC.GetLatestBlockhash(ctx, commitment)
 	if err != nil {
 		return "", fmt.Errorf("could not get latest blockhash: %w", err)
 	}
@@ -95,7 +95,7 @@ func (e client) SendTransactionOnChain(ctx context.Context, txBase64 string) (Tx
 }
 
 // CheckSignature checks if a transaction with the given signature has been confirmed on-chain.
-func (e client) CheckSignature(ctx context.Context, tx TxID) (bool, error) {
+func (e client) CheckSignature(ctx context.Context, tx TxID, confitrmationStatus rpc.ConfirmationStatusType) (bool, error) {
 	sig, err := solana.SignatureFromBase58(string(tx))
 	if err != nil {
 		return false, fmt.Errorf("could not convert signature from base58: %w", err)
@@ -110,7 +110,7 @@ func (e client) CheckSignature(ctx context.Context, tx TxID) (bool, error) {
 		return false, fmt.Errorf("could not confirm transaction: no valid status")
 	}
 
-	if status.Value[0] == nil || status.Value[0].ConfirmationStatus != rpc.ConfirmationStatusFinalized {
+	if status.Value[0] == nil || status.Value[0].ConfirmationStatus != confitrmationStatus {
 		return false, fmt.Errorf("transaction not finalized yet")
 	}
 

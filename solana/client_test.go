@@ -142,7 +142,7 @@ func TestNewClient(t *testing.T) {
 		)
 		require.NoError(t, err)
 
-		txID, err := c.SendTransactionOnChain(context.TODO(), testTx)
+		txID, err := c.SendTransactionOnChain(context.TODO(), testTx, rpc.CommitmentConfirmed)
 		require.NoError(t, err)
 
 		expectedTxID := jupSolana.TxID(testSignature)
@@ -157,7 +157,7 @@ func TestNewClient(t *testing.T) {
 		)
 		require.NoError(t, err)
 
-		txID, err := c.SendTransactionOnChain(context.TODO(), testTx)
+		txID, err := c.SendTransactionOnChain(context.TODO(), testTx, rpc.CommitmentConfirmed)
 		require.NoError(t, err)
 
 		expectedTxID := jupSolana.TxID(testSignature)
@@ -172,7 +172,7 @@ func TestNewClient(t *testing.T) {
 		)
 		require.NoError(t, err)
 
-		_, err = c.SendTransactionOnChain(context.TODO(), testTx)
+		_, err = c.SendTransactionOnChain(context.TODO(), testTx, rpc.CommitmentConfirmed)
 		require.EqualError(t, err, "could not get latest blockhash: mocked error")
 	})
 
@@ -184,7 +184,7 @@ func TestNewClient(t *testing.T) {
 		)
 		require.NoError(t, err)
 
-		_, err = c.SendTransactionOnChain(context.TODO(), testTx)
+		_, err = c.SendTransactionOnChain(context.TODO(), testTx, rpc.CommitmentConfirmed)
 		require.EqualError(t, err, "could not send transaction: mocked error")
 	})
 
@@ -199,6 +199,7 @@ func TestNewClient(t *testing.T) {
 		_, err = c.CheckSignature(
 			context.TODO(),
 			jupSolana.TxID(testSignature),
+			rpc.ConfirmationStatusConfirmed,
 		)
 		require.EqualError(t, err, "could not get signature status: mocked error")
 	})
@@ -214,6 +215,7 @@ func TestNewClient(t *testing.T) {
 		_, err = c.CheckSignature(
 			context.TODO(),
 			jupSolana.TxID(processingSignature),
+			rpc.ConfirmationStatusConfirmed,
 		)
 		require.EqualError(t, err, "transaction not finalized yet")
 	})
@@ -229,6 +231,7 @@ func TestNewClient(t *testing.T) {
 		confirmed, err := c.CheckSignature(
 			context.TODO(),
 			jupSolana.TxID(testSignature),
+			rpc.ConfirmationStatusConfirmed,
 		)
 		require.NoError(t, err)
 		require.True(t, confirmed)

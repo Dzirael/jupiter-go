@@ -31,8 +31,8 @@ type rpcService interface {
 }
 
 type Client interface {
-	SendTransactionOnChain(context.Context, string) (TxID, error)
-	CheckSignature(context.Context, TxID) (bool, error)
+	SendTransactionOnChain(context.Context, string, rpc.CommitmentType) (TxID, error)
+	CheckSignature(context.Context, TxID, rpc.ConfirmationStatusType) (bool, error)
 	GetTokenAccountBalance(context.Context, string) (TokenAccount, error)
 }
 
