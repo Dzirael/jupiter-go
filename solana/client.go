@@ -64,13 +64,13 @@ func NewClient(
 }
 
 // SendTransactionOnChain sends a transaction on-chain.
-func (e client) SendTransactionOnChain(ctx context.Context, txBase64 string, commitment rpc.CommitmentType) (TxID, error) {
+func (e client) SendTransactionOnChain(ctx context.Context, clientRPC *rpc.Client, txBase64 string, commitment rpc.CommitmentType) (TxID, error) {
 	tx, err := NewTransactionFromBase64(txBase64)
 	if err != nil {
 		return "", fmt.Errorf("could not deserialize swap transaction: %w", err)
 	}
 
-	latestBlockhash, err := e.clientRPC.GetLatestBlockhash(ctx, commitment)
+	latestBlockhash, err := clientRPC.GetLatestBlockhash(ctx, commitment)
 	if err != nil {
 		return "", fmt.Errorf("could not get latest blockhash: %w", err)
 	}
